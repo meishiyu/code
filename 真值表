@@ -1,0 +1,161 @@
+#include "stdio.h"
+#include<math.h>
+#include<string.h>
+typedef struct optrstack // 定义运算符结构体 
+{
+  char oper[30];
+  int loc;
+}OPStack;
+void initop(OPStack&op)   //初始化运算符结构体 
+{
+  int  i;
+op.loc=0;
+  for(i=0;i<30;i++)op.oper[i]='\0';  
+}
+void push(OPStack&op,char c)  //寄存运算符 
+{
+op.oper[op.loc++]=c;
+}
+char pop(OPStack&op)         // 返回当前字符的前一个字符？ 
+{
+ return(op.oper[--op.loc]);
+}
+typedef struct opndstack     //定义操作数结构体 
+{
+  int oper[60];
+  int loc;
+}OPndStack;
+void initopnd(OPndStack&op)   //初始化操作数结构体 
+{
+  int  i;
+op.loc=0 ;
+  for(i=0;i<30;i++)op.oper[i]='\0';  
+}
+void pushopnd(OPndStack&op, int c)  //后推寄存操作数 
+{
+op.oper[op.loc++]=c;
+}
+int popopnd(OPndStack&op)         //前推操作数 
+{
+ return(op.oper[--op.loc]);
+}
+void init(char s[])        //输入并存储命题公式             
+{int t;
+printf("\n请输入任意一个命题公式（命题变元为一个字符）\n");
+printf("非、析取、合取、条件、双条件词分别用符号!、|、&、-、+表示\n");
+  gets(s);
+  t=strlen(s);   
+  s[t]='@';
+  s[t+1]='\0';
+}
+int is_optr(char c)     //判断是否是运算符 
+{
+  char optr_list[]="+-|&!()@";
+  for(int i=0;i<(int)strlen(optr_list);i++) if(c==optr_list[i]) return 1;
+  return 0;
+}
+char first(char op1, char op2)   // 运用运算符优先级表，返回两运算符优先级 
+{
+char tab[8][9]={
+"><<<<<>>",
+">><<<<>>",
+">>><<<>>",
+">>>><<>>",
+">>>>><>>",
+"<<<<<<=E",
+">>>>>E>>",
+"<<<<<<E=",
+};
+char optr_list[]="+-|&!()@";
+int op1_loc, op2_loc;
+for(op1_loc=0;op1_loc<(int)strlen(optr_list);op1_loc++) if(optr_list[op1_loc]==op1) break;
+for(op2_loc=0;op2_loc<(int)strlen(optr_list);op2_loc++) if(optr_list[op2_loc]==op2) break;
+return tab[op1_loc][op2_loc];
+}
+int operate(int x, char op, int y)  // 计算x运算符y的结果 
+{
+switch(op) {
+case '+':return (((!x)||y)&&(x||(!y)));break;
+case '-':return ((!x)||y);break;
+case '|':return x||y;break;
+case '&':return x&&y;break;
+}
+return -1;
+}
+void divi(char s[],char c[]) // 提取命题变元 并将变元排序 
+{
+  int i,j=0,t;
+  for(i=0;s[i]!='@';i++) if (!is_optr(s[i])){ for(t=0;t<j;t++) if (c[t]==s[i]) break;if (t==j)c[j++]=s[i]; } // 如果不是运算符 将s[i]中的命题变元存入c[]中 
+  c[j]='\0';
+char aa;                       //进行排序 
+  for(i=0;i<j-1;i++)
+for(t=i+1;t<j;t++) if(c[i]>c[t])
+{aa=c[i];c[i]=c[t];c[t]=aa;}
+}
+int locate(char s[],char c)      //返回该变元在数组中的位置 
+{
+  int i;
+  for(i=0;i<(int)strlen(s);i++)if (s[i]==c)break;
+  return i;
+}
+int calc(char s[100],int *p)
+{ 
+char myopnd[10],c;
+int sloc=0;
+OPStack optr;         //定义 optr 结构体 
+initop(optr);         //初始化结构体 
+push(optr,'@');       //optr.oper[0]='@' 
+OPndStack opnd;       //定义opnd 结构体 
+initopnd(opnd);       //初始化opnd结构体 
+divi(s, myopnd);      // 提取命题变元 并将变元排序
+c=s[sloc++];          //c=s[0] ,sloc=1
+while( c!='@' || optr.oper[optr.loc-1]!='@' ) {
+if( !is_optr(c) ) {int d1; d1=p[locate(myopnd,c)];  pushopnd(opnd,d1);c=s[sloc++];}    //若不为运算符定义d1记录该变元在mypond中的位置?，opnd[]=d1且下一位置的字符赋给c 
+else {
+switch( first(optr.oper[optr.loc-1], c) ) {                      //若为运算符，并运用first函数返回oper ，c在优先级表中相对应的符号根据符号 
+case '<':push(optr,c);c=s[sloc++];break;                         //后者优先级大于前者，将运算符寄存在optr中，c又重新赋值为s数组下一位。 
+case '=':pop(optr);c=s[sloc++];break;                            //该情况特殊只存在（）为=，如（A），pop（optr)将loc前移。c重新赋值为s数组下一位 
+case '>':char op;op=pop(optr);                                   //计算 真值 
+if(op=='!'){int a;a=!popopnd(opnd);pushopnd(opnd,a);}
+else{int a,b;a=popopnd(opnd);b=popopnd(opnd); 
+int res;res=operate(b,op,a);pushopnd(opnd,res);}
+break; 
+}
+}
+}
+return opnd.oper[opnd.loc-1];
+}
+int  main()
+{
+  char exp[100],myopnd[10];
+  int i,j,n,m, A[1024][10] ,flag,k;
+  int F[1024];
+init(exp);                     //函数位于42行，输入并储存命题公式。 
+divi(exp, myopnd);             //函数位于第85行，提取公式中的命题变元并将变元排序 
+  n=(int)strlen(myopnd);       //n=命题变元个数，其中变元不重复 
+  m=(int)pow(2,n);             // m=2的n次方 
+  for(j=0;j<n;j++) {            //对真值表进行赋值
+  flag=1;
+   k=(int)pow(2,n-j-1); 
+   for(i=0;i<m;i++) {         
+   if(!(i%k))flag=!flag;
+  if(flag) A[i][j]=1;
+   else A[i][j]=0;
+   }
+  } 
+  char ss[100];
+  int t;
+strcpy(ss,exp);
+  t=(int)strlen(ss);         //让ss获得最初输入形态 
+  ss[t-1]='\0';  
+printf("命题公式%s的真值表如下：\n",ss);   //打印真值表 
+  for(j=0;j<n;j++)printf("%4c",myopnd[j]); 
+printf("   %s\n",ss);
+  for(i=0;i<m;i++){
+    for(j=0;j<n;j++)printf("%4d",A[i][j]);
+  F[i]=calc(exp,A[i]);             //函数calc位于101行  计算当行赋值下最终真值 
+printf("%6d",F[i]);
+printf("\n");
+  } 
+  return 0; 
+}
