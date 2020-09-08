@@ -1,0 +1,115 @@
+#include <iostream>
+#include <stdio.h>
+#include <string>
+using namespace std;
+class Student{       //class declarection
+	public:
+		string num;
+		string name;
+		double mask;		
+};
+class Sqlist{
+	private:
+		Student *key;
+		int length;
+	public:
+		int reList(Sqlist &l);     //初始化链表函数 
+		void input(Sqlist &l,int i);// 
+		void showlist(Sqlist l);    //显示链表内容 
+		void find(Sqlist l,string name);//查找学生信息 
+		void getme(Sqlist l,int i);    //获取学生信息 
+		void setin(Sqlist &l,int i);   //插入学生信息 
+		void dela(Sqlist &l,int i);   //删除学生信息 
+		int getlen(Sqlist &l);        //显示链表长度
+		void des(Sqlist &L);         //销毁学生信息 
+};
+int Sqlist::reList(Sqlist &L){
+	L.length=1;
+	if(L.length==0) return 0;
+	L.key; 
+	cout<<"输入学号，姓名，成绩"<<endl; 
+	while(scanf("%s%s%d",&L.key->num,&L.key->name,&L.key->mask)!=EOF){
+		cout<<"输入学号，姓名，成绩"<<endl;
+		L.length++;
+		L.key++;
+	};
+	L.length--;
+	return 0;
+}
+
+int Sqlist:: getlen(Sqlist &L){
+	return L.length;
+}
+
+int main(){
+	Sqlist La;
+	int choose;
+	cout<<"....................."<<endl;
+	cout<<"1.初始化链表"<<endl; 
+	cout<<"2.构建链表"<<endl;
+	cout<<"3.显示链表长度"<<endl;
+	cout<<"4.查找学生信息"<<endl;
+	cout<<"5.显示链表内容"<<endl; 
+   	cout<<"6.获取学生信息"<<endl;
+   	cout<<"7.插入学生信息"<<endl;
+   	cout<<"8.删除学生信息"<<endl;
+    cout<<"9.销毁；链表 ："<<endl;
+	cout<<"0.退出" <<endl;
+	cout<<"....................."<<endl;
+	cin>>choose;
+	choose=-1;
+	while(choose!=0){
+		cout<<""<<endl;
+		cin>>choose;
+		switch (choose){
+			case 1:
+			if(La.reList(La)) cout<<"初始化链表成功"<<endl;
+			else cout<<"初始化链表失败"<<endl;
+			break;
+			case 2:
+				break;
+			case 3:  
+				cout<<"链表长度为"<<La.getlen(La)<<endl;    //显示链表长度 
+				break;
+			case 4:
+				//showlist(La);
+				break;
+			case 5:
+				//showlist(La);
+				break;
+			case 6:
+				break;
+			case 7:
+				//setin(La,int i);
+				break;
+			case 8:
+				//dela();
+				break;
+			case 9:
+				//des(La);
+				break;
+				
+		}
+	}
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
