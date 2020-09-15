@@ -137,6 +137,7 @@ void creList_r(LinkList&L){
 		r=p;
 		length++;
 	}
+	length--;
 	file.close();
 }   //后插法构建链表
 
@@ -159,6 +160,7 @@ void creList_h(LinkList&L){
 		L->next=p;
 		length++;
 	}
+	length--;
 	file.close();
 }   //前插法构建链表
 
@@ -179,7 +181,7 @@ int serList(LinkList&L,string h){
 		cout<<"学号"<<p->data.num<<"姓名"<<p->data.name<<"成绩"<<p->data.price<<endl;
 		return 0;
 		}
-		else return 1;
+		p=p->next;
 	}
 	
 }    //查找学生信息
@@ -193,8 +195,6 @@ int desList(LinkList&L){
 }            //销毁链表
 int sertList(LinkList&L,Student &e,int i){
 	LinkList p,r;
-	cout<<"输入你想要插入的位置"<<endl;
-	cin>>i;
 	p=L;
 	int j=0;
 	while(p&&j<i-1){
