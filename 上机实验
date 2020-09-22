@@ -35,7 +35,6 @@ void Sqlist:: goujian(Sqlist &L){     //构建顺序表
 	cout<<"请你输入成绩，学号，姓名"<<"      输入完毕后按回车再按ctrl+z"<<endl; 
 	while(scanf("%d",&L.key[i].mask)!=EOF){        
 		cin>>L.key[i].num>>L.key[i].name; 
-		cout<<"请你输入成绩，学号，姓名"<<endl;
 		L.length++;
 	    i++; 
 	}; 
@@ -51,16 +50,16 @@ void Sqlist:: getme(Sqlist &l,int i){    //获取学生信息完成
 	else cout<<"学号: "<<l.key[i].num<<"姓名："<<l.key[i].name<<"成绩: "<<l.key[i].mask<<endl; 
 }
 void Sqlist:: setin(Sqlist &l,int x){        //插入 
-    if(x){        
-    	for(int i=l.length;i>=1;i--){         // 
+        l.length++;
+		for(int i=l.length-1;i>x;i--){         // 
     		l.key[i+1].num=l.key[i].num;
     		l.key[i+1].name=l.key[i].name;
     		l.key[i+1].mask=l.key[i].mask;
 		}
-		l.length++;
+		
 		cout<<"输入该生的学号，姓名，成绩"<<endl;
 		cin>>l.key[x].num>>l.key[x].name>>l.key[x].mask;
-	}	 
+	
 }
 void Sqlist:: des(Sqlist &L){                    //销毁链表完成 
 	cout<<"正在销毁所有学生信息"<<endl; 
@@ -71,28 +70,38 @@ void Sqlist:: dela(Sqlist &l){            //删除学生信息完成
     int i;
 	cout<<"输入你想要删除的学生编号"<<endl; 
 	cin>>i;
+	if(i<l.length&&i>0){
 	for(int m=i;m<l.length;m++){               //第i个后面的信息依次覆盖前面的信息，即完成删除 
 		l.key[m].num=l.key[m+1].num;
 		l.key[m].name=l.key[m+1].name;
 		l.key[m].mask=l.key[m+1].mask;
 	}
+    }
+    else {
+    	cout<<"输入非法"<<endl;
+    }
 	l.length--;
 }
 void Sqlist:: find(Sqlist &l){                 //查找学生信息完成 
     string str;
 	cout<<"输入该学生的姓名"<<endl;
 	cin>>str;
+	int m=1; 
 	for(int i=1;i<=l.length;i++){               //遍历顺序表寻找与该学生string相同的学生 
 		if(str==l.key[i].name){                  
 			cout<<"找到目标学生"<<endl;
-			cout<<"学号: "<<l.key[i].num<<"姓名："<<l.key[i].name<<"成绩: "<<l.key[i].mask<<endl; 
-		}
+			cout<<"  学号: "<<l.key[i].num<<"  姓名："<<l.key[i].name<<"  成绩: "<<l.key[i].mask<<endl; 
+		    m=0;
+		} 
+	}
+	if(m==1){
+		cout<<"未找到目标学生"<<endl;
 	}
 }
 void Sqlist:: showlist(Sqlist l){            //展示所有收录学生信息完成 
 	cout<<"即将展示列表"<<endl;
 	for(int i=1;i<=l.length;i++){             //遍历顺序表，依次输出 
-		cout<<"学号: "<<l.key[i].num<<"姓名："<<l.key[i].name<<"成绩: "<<l.key[i].mask<<endl;  
+		cout<<"  学号: "<<l.key[i].num<<"  姓名："<<l.key[i].name<<"  成绩: "<<l.key[i].mask<<endl;  
 	} 
 }
 
@@ -119,7 +128,7 @@ int main(){
 			if(!La.reList(La)) cout<<"初始化链表成功"<<endl;
 			else cout<<"初始化链表失败"<<endl;
 			break;
-		}
+		    }
 			case 2:{
 				La.goujian(La);
 				break;
@@ -149,16 +158,19 @@ int main(){
 			case 7:{
 				int i;
 				cout<<"插入到多少去"<<endl; 
+				cin>>i; 
 				La.setin(La,i);
 				break;
 			}
 			case 8:{
 				La.dela(La);
 				break;
+				cout<<"删除成功"<<endl; 
 			}
 			case 9:{
 				La.des(La);
 				break;
+				cout<<"销毁完成"<<endl; 
 			}
 		}
 	}
