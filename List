@@ -208,7 +208,9 @@ int sertList(LinkList&L,Student &e,int i){
 	return OK;
 }  //插入学生信息
 int deList(LinkList&L,int i){
-    LinkList p,r;
+	if(i>length||i<0) cout<<"输入非法！！！"<<endl;
+    else {
+	LinkList p,r;
     p=L->next;
 	for(int m=0;m<i-1;m++){
 		p=p->next;
@@ -218,14 +220,18 @@ int deList(LinkList&L,int i){
 	delete r;
 	length --;
 	return OK;
+    }
 }        //删除学生信息
 void getList(LinkList&L,int m){
+	if(i>length||i<0) cout<<"输入非法！！！"<<endl;
+	else {
 	LinkList p;
 	p=L->next;
 	for(int i=0;i<m-1;i++){
 		p=p->next;
 	}
 	cout<<"学号"<<p->data.num<<"姓名"<<p->data.name<<"成绩"<<p->data.price<<endl;
+    }
 }  //获取学生信息
 
 
