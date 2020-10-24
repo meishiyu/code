@@ -1,0 +1,29 @@
+#include <iostream>
+using namespace std;
+const int maxn=1e8+5;
+int  a[maxn];
+int main(){
+	int x;
+	int i=1;
+	cin>>x;
+	for(;i<=x;i++){
+		a[i]=i;
+	}
+	i--;
+	while(i!=1){
+		int m;
+	for(m=1;m<=i/2;m++){
+		if(i%2==0){
+			a[m]=a[2*m-1];
+		}
+		if(i%2!=0){
+			a[m]=a[2*m+1];
+		}
+	}
+	m--;
+	i=m;
+	
+    }
+    cout<<a[1]<<endl;
+    return 0;
+}
